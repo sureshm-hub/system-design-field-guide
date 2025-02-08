@@ -66,6 +66,7 @@ graph LR;
     Preprocessor -->|Retrieve| Retriever;
     Retriever -->|Documents| Reranker;
     Reranker -->|Top Results| LLM;
+    User -->|Query| LLM;
     LLM -->|Generated Response| Postprocessor;
     Postprocessor -->|Final Output| User;
     Postprocessor -->|Logs| Feedback;
