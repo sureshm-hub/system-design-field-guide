@@ -61,7 +61,7 @@ This improves factual accuracy, reduces hallucinations, and allows for more up-t
 ## Diagram
 
 ```mermaid
-graph TD;
+graph LR;
     User -->|Query| Preprocessor;
     Preprocessor -->|Retrieve| Retriever;
     Retriever -->|Documents| Reranker;
