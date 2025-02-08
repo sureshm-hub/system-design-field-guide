@@ -62,11 +62,11 @@ This improves factual accuracy, reduces hallucinations, and allows for more up-t
 
 ```mermaid
 graph LR;
-    User -->|Query| Preprocessor;
+    User -->|Prompt| Preprocessor;
     Preprocessor -->|Retrieve| Retriever;
     Retriever -->|Documents| Reranker;
     Reranker -->|Top Results| LLM;
-    User -->|Query| LLM;
+    User -->|Prompt| LLM;
     LLM -->|Generated Response| Postprocessor;
     Postprocessor -->|Final Output| User;
     Postprocessor -->|Logs| Feedback;
