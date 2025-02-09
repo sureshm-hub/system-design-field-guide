@@ -7,7 +7,6 @@ This improves factual accuracy, reduces hallucinations, and allows for more up-t
 
 ## Architecture Overview
 
-
 ### Diagram
 
 ```mermaid
