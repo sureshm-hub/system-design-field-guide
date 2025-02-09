@@ -7,6 +7,23 @@ This improves factual accuracy, reduces hallucinations, and allows for more up-t
 
 ## Architecture Overview
 
+
+### Diagram
+
+```mermaid
+graph LR;
+    User -->|Query| Preprocessor;
+    Preprocessor -->|Retrieve| Retriever;
+    Retriever -->|Documents| Reranker;
+    Reranker -->|Top Results| LLM;
+    User -->|Query| LLM;
+    LLM -->|Generated Response| Postprocessor;
+    Postprocessor -->|Final Output| User;
+    Postprocessor -->|Logs| Feedback;
+```
+
+---
+
 ### Components:
 
 1. **User Query Interface**
@@ -55,22 +72,6 @@ This improves factual accuracy, reduces hallucinations, and allows for more up-t
 - **Orchestration**: LangChain, LlamaIndex, Haystack
 - **Storage**: PostgreSQL, MongoDB, S3 (for document storage)
 - **Monitoring**: Prometheus + Grafana, OpenTelemetry
-
----
-
-## Diagram
-
-```mermaid
-graph LR;
-    User -->|Query| Preprocessor;
-    Preprocessor -->|Retrieve| Retriever;
-    Retriever -->|Documents| Reranker;
-    Reranker -->|Top Results| LLM;
-    User -->|Query| LLM;
-    LLM -->|Generated Response| Postprocessor;
-    Postprocessor -->|Final Output| User;
-    Postprocessor -->|Logs| Feedback;
-```
 
 ---
 
