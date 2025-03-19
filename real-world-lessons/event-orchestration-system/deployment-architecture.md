@@ -13,7 +13,7 @@ C --> D[State Store DynamoDB/PostgreSQL]
 B --> E[Monitoring & Logging CloudWatch/Datadog]
 end
 end
-subgraph Region B (Failover)
+subgraph Region B Failover
 F[Replica Orchestration Service]
 F --> G[Replica State Store]
 end
