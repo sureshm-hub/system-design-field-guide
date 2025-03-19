@@ -12,4 +12,4 @@ graph TD;
         C --> E[Event Processing Workers]
     end
     F[Monitoring & Logging] -->|Observability| C
-    G[Consumers (Microservices, Analytics)] -->|Consume Events| E
+    G[Consumers Microservices, Analytics] -->|Consume Events| E
