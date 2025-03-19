@@ -1,6 +1,5 @@
-1. Context Diagram
-
 ```mermaid
+1. Context Diagram
 graph TD
 A[Event Producers] -->|Events| B[Event Orchestration System]
 B -->|Processed Events| C[Consumers]
