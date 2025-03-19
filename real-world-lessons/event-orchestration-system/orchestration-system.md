@@ -1,6 +1,7 @@
 ```mermaid
 1. Context Diagram
-graph TD
+
+graph TD;
 A[Event Producers] -->|Events| B[Event Orchestration System]
 B -->|Processed Events| C[Consumers]
 B -->|Logs & Metrics| D[Monitoring & Alerting]
@@ -10,7 +11,7 @@ C -->|Response/Acknowledgment| B
 2. Component Diagram
 
 
-graph TD
+graph TD;
     subgraph Event Orchestration System
         A[Event Ingestion API] --> B[Message Broker (Kafka/SQS)]
         B --> C[Orchestration Engine]
