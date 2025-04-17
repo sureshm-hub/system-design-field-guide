@@ -75,6 +75,7 @@ In such setups, they lean more toward CA, but strict CA is impossible in a distr
 #### Consistency deals with visibility of data across replicas, not durability (persistence) or availability (uptime). They are separate guarantees in distributed systems.
 
 ```mermaid
+
 %%{init: {"theme":"default"}}%%
 table
   title Distributed Systems Consistency Models
@@ -174,4 +175,5 @@ table
     IoT, analytics pipelines
     Schema design keeps data in one row
     Multi-row ops = eventual
+    
 ```
