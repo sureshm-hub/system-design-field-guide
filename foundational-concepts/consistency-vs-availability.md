@@ -59,3 +59,119 @@ Some relational databases **trade off strong consistency** for better availabili
 - **Eventual consistency** (e.g., Oracle GoldenGate)
 
 In such setups, they lean more toward CA, but strict CA is impossible in a distributed system with network partitions.
+
+### Summary of Consistency Models
+
+#### Strong consistency provides accuracy but comes with latency, cost, and availability trade-offs. For many real-world apps (like social feeds), eventual or causal consistency is more efficient and acceptable.
+
+#### Eventual consistency still guarantees convergence across replicas over time. It’s predictable, just not immediate. It's ideal for high-availability systems where slight staleness is tolerable.
+
+#### Causal consistency is very practical in real-world systems like collaborative tools, messaging, and social apps, where operation order matters.
+
+#### You must choose trade-offs during partitions, not always. The system can be CA when no partitions exist. The CAP theorem only kicks in under network partitions.
+
+#### Many modern systems (like Cosmos DB, Cassandra, DynamoDB) support multiple consistency models, and let you tune per operation or per session.
+
+#### Consistency deals with visibility of data across replicas, not durability (persistence) or availability (uptime). They are separate guarantees in distributed systems.
+
+```mermaid
+%%{init: {"theme":"default"}}%%
+table
+  title Distributed Systems Consistency Models
+
+  header
+    System Model
+    Default Consistency Model
+    Description
+    Ideal Use Cases
+    How to Tune
+    Notes
+
+  row
+    Amazon DynamoDB
+    Eventual (reads)
+    Fully managed NoSQL DB; writes are strongly consistent
+    IoT, leaderboards, session stores
+    Use `ConsistentRead=True` or `--consistent-read`
+    Global Tables = eventual across regions
+
+  row
+    Apache Cassandra
+    Tunable
+    Decentralized NoSQL DB with quorum-based consistency
+    Logging, time-series, recommendations
+    Use consistency levels: ONE, QUORUM, ALL
+    Developer manages trade-offs
+
+  row
+    MongoDB
+    Eventual (replica sets)
+    Document DB; supports causal via sessions
+    CMS, analytics, catalogs
+    Use `readConcern=majority` or sessions
+    Strong reads only from primary
+
+  row
+    etcd
+    Strong
+    Key-value store using Raft consensus
+    Config mgmt, service discovery
+    Not tunable
+    Strong only; limited scalability
+
+  row
+    Zookeeper
+    Strong
+    Coordination service using ZAB protocol
+    Leader election, config storage
+    Not tunable
+    Often replaced with etcd
+
+  row
+    Redis
+    Strong (standalone), Eventual (clustered)
+    In-memory store with variable consistency
+    Caching, pub/sub, game state
+    Choose standalone vs. cluster
+    Cluster = faster, less consistent
+
+  row
+    CockroachDB
+    Strong
+    SQL-compliant DB with distributed consensus
+    Multi-region RDBMS apps
+    Not tunable
+    Optimized for correctness
+
+  row
+    Google Spanner
+    Strong
+    Global DB with TrueTime-based external consistency
+    SaaS, finance, global inventory
+    Staleness options available
+    Expensive but precise
+
+  row
+    Azure Cosmos DB
+    Session (default)
+    Multi-model DB with 5 consistency levels
+    E-commerce, ML, multi-tenant SaaS
+    Choose from 5 options: Strong to Eventual
+    Most tunable platform
+
+  row
+    Riak
+    Eventual
+    Key-value store with quorum tuning
+    Fault-tolerant, IoT ingestion
+    Tune via N/R/W settings
+    Use CRDTs for conflict resolution
+
+  row
+    Google BigTable
+    Strong (row), Eventual (multi-row)
+    Wide-column store for big data
+    IoT, analytics pipelines
+    Schema design keeps data in one row
+    Multi-row ops = eventual
+```
