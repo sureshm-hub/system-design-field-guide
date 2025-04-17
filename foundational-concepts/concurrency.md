@@ -128,3 +128,5 @@ ReadWriteLock --> ReentrantLock
 BlockingQueue <|-- ArrayBlockingQueue
 BlockingQueue <|-- LinkedBlockingQueue
 BlockingQueue <|-- PriorityBlockingQueue
+
+```
