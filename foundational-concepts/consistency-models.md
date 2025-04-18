@@ -29,7 +29,7 @@
 | Google BigTable      | Strong (row), Eventual (multi-row) | Column DB with row-based strong consistency                     | Analytics, telemetry                            | Design schema to keep strong consistency within a row                                                                                                                     | Multi-row ops are eventually consistent                |
 
 
-## Best Practices:
+### Best Practices:
 
 | Need	                           | Recommended Tuning                                      |  
 |---------------------------------|---------------------------------------------------------|
