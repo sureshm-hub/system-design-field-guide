@@ -27,7 +27,6 @@
 | Azure Cosmos DB      | Session Consistency              | Multi-model DB with 5 tunable models                             | Personalization, e-commerce                     | Choose among Strong, Bounded, Eventual, etc.                                                                                                                              | Most flexible consistency options available             |
 | Riak                 | Eventual Consistency             | KV store prioritizing availability                               | Sensor data, CRDT-based systems                 | Use quorum settings: N, R, W                                                                                                                                              | CRDTs needed for conflict resolution                    |
 | Google BigTable      | Strong (row), Eventual (multi-row) | Column DB with row-based strong consistency                     | Analytics, telemetry                            | Design schema to keep strong consistency within a row                                                                                                                     | Multi-row ops are eventually consistent                |
-|----------------------|----------------------------------|-------------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
 
 
 ## Best Practices:
@@ -39,7 +38,7 @@
 | Per-user causality	             | Session or Causal Consistency                           |
 | Tradeoffs between cost/latency	 | Bounded staleness or Consistent Prefix                  |
 | Geo-distributed apps	           | Spanner or Cosmos DB with strong or session consistency |
-|---------------------------------|---------------------------------------------------------|
+
 
 ## Special Focus: DynamoDB Consistency Options
 DynamoDB supports two types of reads:
