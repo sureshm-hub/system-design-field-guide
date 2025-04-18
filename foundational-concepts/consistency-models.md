@@ -101,6 +101,19 @@ To tune consistency, use application-side code as shown above.
 | Real-time  financial or inventory	                             | Strongly consistent           |
 | Low-latency, high-throughput reads                             | 	Eventually consistent        | 
 
+###  DynamoDB + DynamoDB Accelerator (DAX)
+
+While DynamoDB alone does not offer native causal consistency, DAX adds this capability:
+
+DAX = DynamoDB Accelerator is an in-memory cache for DynamoDB that supports microsecond response times.
+Ensures causal consistency by guaranteeing that writes by a client will be visible to subsequent reads by the same client.
+
+|Feature	|   DynamoDB	| DynamoDB + DAX |
+|-------------------|-----------------------|-----------------------------|
+|Default Consistency	| Eventually Consistent	| Causal Consistency |
+|Strong Read Option	| Yes (via ConsistentRead=True)	| No (DAX doesn’t support strong reads) |
+|Causal Consistency	| Not supported	| Yes (within the same client session)|
+
 
 ##  Special Focus:  For Leader/Follower Systems:
 In systems like Redis, Kafka, or ElasticSearch, topology (leader/follower) and client read preference can be configured to control consistency.
