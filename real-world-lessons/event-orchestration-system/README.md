@@ -9,12 +9,12 @@ Helps align stakeholders on the system's scope and key dependencies.
 
 ## 2. Component Diagram
 
-Illustrats major system components such as the event router, workflow engine, state store, and message broker (e.g., Kafka, RabbitMQ, or AWS SQS).
+Illustrates major system components such as the event router, workflow engine, state store, and message broker (e.g., Kafka, RabbitMQ, or AWS SQS).
 Captures API interfaces and interaction flows between components.
 
 ## 3. Sequence Diagram
 
-Mapps out the lifecycle of an event from ingestion to processing and delivery.
+Maps out the lifecycle of an event from ingestion to processing and delivery.
 Includes event retries, error handling, and idempotency mechanisms.
 
 ## 4. Data Flow Diagram (DFD)
