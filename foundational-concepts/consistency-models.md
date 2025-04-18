@@ -27,8 +27,7 @@
 | Azure Cosmos DB      | Session Consistency              | Multi-model DB with 5 tunable models                             | Personalization, e-commerce                     | Choose among Strong, Bounded, Eventual, etc.                                                                                                                              | Most flexible consistency options available             |
 | Riak                 | Eventual Consistency             | KV store prioritizing availability                               | Sensor data, CRDT-based systems                 | Use quorum settings: N, R, W                                                                                                                                              | CRDTs needed for conflict resolution                    |
 | Google BigTable      | Strong (row), Eventual (multi-row) | Column DB with row-based strong consistency                     | Analytics, telemetry                            | Design schema to keep strong consistency within a row                                                                                                                     | Multi-row ops are eventually consistent                |
-
-
+|----------------------|----------------------------------|-------------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
 
 
 ## Best Practices:
@@ -40,8 +39,9 @@
 | Per-user causality	             | Session or Causal Consistency                           |
 | Tradeoffs between cost/latency	 | Bounded staleness or Consistent Prefix                  |
 | Geo-distributed apps	           | Spanner or Cosmos DB with strong or session consistency |
+|---------------------------------|---------------------------------------------------------|
 
-###  Special Focus: DynamoDB Consistency Options
+## Special Focus: DynamoDB Consistency Options
 DynamoDB supports two types of reads:
 
 Eventually Consistent Reads (default): Faster, cheaper, might return stale data
@@ -94,7 +94,7 @@ Environment = "dev"
 To tune consistency, use application-side code as shown above.
 ```
 
-#### DynamoDB Tradeoff Summary
+### DynamoDB Tradeoff Summary
 | Scenario	                                                      | Recommended Read Mode         | 
 |----------------------------------------------------------------|-------------------------------|
 | User profile/settings	| Strongly consistent (true)    |
@@ -103,7 +103,7 @@ To tune consistency, use application-side code as shown above.
 | Low-latency, high-throughput reads                             | 	Eventually consistent        | 
 
 
-###  Special Focus:  For Leader/Follower Systems:
+##  Special Focus:  For Leader/Follower Systems:
 In systems like Redis, Kafka, or ElasticSearch, topology (leader/follower) and client read preference can be configured to control consistency.
 
 Examples:
