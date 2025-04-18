@@ -29,15 +29,9 @@
 | Google BigTable      | Strong (row), Eventual (multi-row) | Column DB with row-based strong consistency                     | Analytics, telemetry                            | Design schema to keep strong consistency within a row                                                                                                                     | Multi-row ops are eventually consistent                |
 
 
-### Switch by Topology or Client Routing:
-In systems like Redis, Kafka, or ElasticSearch, topology (leader/follower) and client read preference can be configured to control consistency.
 
-Examples:
-Kafka: Use acks=all for strong consistency, acks=0 for fast/weak writes
 
-MongoDB: Use readPreference=primary (strong) vs. secondaryPreferred (eventual)
-
-### Best Practices:
+## Best Practices:
 
 | Need	                           | Recommended Tuning                                      |  
 |---------------------------------|---------------------------------------------------------|
@@ -47,7 +41,7 @@ MongoDB: Use readPreference=primary (strong) vs. secondaryPreferred (eventual)
 | Tradeoffs between cost/latency	 | Bounded staleness or Consistent Prefix                  |
 | Geo-distributed apps	           | Spanner or Cosmos DB with strong or session consistency |
 
-###  DynamoDB Consistency Options
+###  Special Focus: DynamoDB Consistency Options
 DynamoDB supports two types of reads:
 
 Eventually Consistent Reads (default): Faster, cheaper, might return stale data
@@ -100,19 +94,19 @@ Environment = "dev"
 To tune consistency, use application-side code as shown above.
 ```
 
-| Need	                           | Recommended Tuning                                      |  
-|---------------------------------|---------------------------------------------------------|
-| Accurate reads after writes     | 	Strong (QUORUM/ALL) consistency for read/write         |
-| Low latency, ok to lag          | 	Eventual or single-node reads                          |
-| Per-user causality	             | Session or Causal Consistency                           |
-| Tradeoffs between cost/latency	 | Bounded staleness or Consistent Prefix                  |
-| Geo-distributed apps	           | Spanner or Cosmos DB with strong or session consistency |
-
-### Tradeoff Summary
-
+#### DynamoDB Tradeoff Summary
 | Scenario	                                                      | Recommended Read Mode         | 
 |----------------------------------------------------------------|-------------------------------|
 | User profile/settings	| Strongly consistent (true)    |
 | Feed browsing, search, analytics | Eventually consistent (false) |
 | Real-time  financial or inventory	                             | Strongly consistent           |
 | Low-latency, high-throughput reads                             | 	Eventually consistent        | 
+
+
+###  Special Focus:  For Leader/Follower Systems:
+In systems like Redis, Kafka, or ElasticSearch, topology (leader/follower) and client read preference can be configured to control consistency.
+
+Examples:
+Kafka: Use acks=all for strong consistency, acks=0 for fast/weak writes
+
+MongoDB: Use readPreference=primary (strong) vs. secondaryPreferred (eventual)
