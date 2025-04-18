@@ -57,7 +57,7 @@ DynamoDbClient dynamoDb = DynamoDbClient.create();
 GetItemRequest request = GetItemRequest.builder()
 .tableName("Users")
 .key(Map.of("userId", AttributeValue.fromS("123")))
-.consistentRead(true) // 👈 Enables strong consistency
+.consistentRead(true) // Enables strong consistency
 .build();
 
 GetItemResponse response = dynamoDb.getItem(request);
