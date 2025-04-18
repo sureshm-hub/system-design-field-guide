@@ -14,16 +14,105 @@
 
 ## Summary of Consistency Models
 
-| System Model         | Default Consistency Model       | Description                                                       | Ideal Use Cases                                | Tuning Method                                                                                                                                                 | Notes                                                   |
-|----------------------|----------------------------------|-------------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
-| Amazon DynamoDB      | Eventual Consistency (reads)     | NoSQL, low-latency DB with optional strong read                  | IoT, shopping carts, leaderboards               | `ConsistentRead=True` or `--consistent-read`                                                                                                                  | Writes are strongly consistent by default               |
-| Apache Cassandra     | Tunable Consistency              | Decentralized DB with read/write quorum levels                   | Logging, metrics, time-series                   | Use consistency levels: ONE - Fastest, least consistent, QUORUM - N/2+1  Balanced consistency and performance, ALL - Highest consistency, slowest performance | Developer defines consistency trade-offs                |
-| MongoDB              | Eventual (Replica Sets)          | Document store with causal/session consistency options           | CMS, analytics, content                         | Use sessions, `readConcern: "majority"`                                                                                                                       | Strong only on primary node                            |
-| etcd                 | Strong Consistency               | Raft-based key-value store for distributed coordination           | Service discovery, config store                 | Not tunable                                                                                                                                                   | Always linearizable                                     |
-| Zookeeper            | Strong Consistency               | ZAB-based coordination system                                    | Leader election, locks                          | Not tunable                                                                                                                                                   | Can be a single point of failure                        |
-| Redis                | Strong (Standalone), Eventual (Clustered) | In-memory DB with HA cluster support                             | Caching, pub/sub, sessions                      | Use standalone (strong) or replica (eventual)                                                                                                                 | Clustered Redis is eventually consistent                |
-| CockroachDB          | Strong Consistency               | Distributed SQL DB with global transactions                      | Banking, fintech, multi-region apps             | Not tunable                                                                                                                                                   | Strong across nodes and regions                        |
-| Google Spanner       | Strong Consistency               | Global SQL DB with external consistency via TrueTime             | Global inventory, finance                        | Can use stale reads (`bounded staleness`)                                                                                                                     | Strong across continents                               |
-| Azure Cosmos DB      | Session Consistency              | Multi-model DB with 5 tunable models                             | Personalization, e-commerce                     | Choose among Strong, Bounded, Eventual, etc.                                                                                                                  | Most flexible consistency options available             |
-| Riak                 | Eventual Consistency             | KV store prioritizing availability                               | Sensor data, CRDT-based systems                 | Use quorum settings: N, R, W                                                                                                                                  | CRDTs needed for conflict resolution                    |
-| Google BigTable      | Strong (row), Eventual (multi-row) | Column DB with row-based strong consistency                     | Analytics, telemetry                            | Design schema to keep strong consistency within a row                                                                                                         | Multi-row ops are eventually consistent                |
+| System Model         | Default Consistency Model       | Description                                                       | Ideal Use Cases                                | Tuning Method                                                                                                                                                             | Notes                                                   |
+|----------------------|----------------------------------|-------------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| Amazon DynamoDB      | Eventual Consistency (reads)     | NoSQL, low-latency DB with optional strong read                  | IoT, shopping carts, leaderboards               | `ConsistentRead=True` or `--consistent-read`                                                                                                                              | Writes are strongly consistent by default               |
+| Apache Cassandra     | Tunable Consistency              | Decentralized DB with read/write quorum levels                   | Logging, metrics, time-series                   | Use consistency levels:<br/> ONE - Fastest, least consistent,<br/> QUORUM - N/2+1  Balanced consistency and performance,<br/> ALL - Highest consistency, slowest performance | Developer defines consistency trade-offs                |
+| MongoDB              | Eventual (Replica Sets)          | Document store with causal/session consistency options           | CMS, analytics, content                         | Use sessions, `readConcern: "majority"`                                                                                                                                   | Strong only on primary node                            |
+| etcd                 | Strong Consistency               | Raft-based key-value store for distributed coordination           | Service discovery, config store                 | Not tunable                                                                                                                                                               | Always linearizable                                     |
+| Zookeeper            | Strong Consistency               | ZAB-based coordination system                                    | Leader election, locks                          | Not tunable                                                                                                                                                               | Can be a single point of failure                        |
+| Redis                | Strong (Standalone), Eventual (Clustered) | In-memory DB with HA cluster support                             | Caching, pub/sub, sessions                      | Use standalone (strong) or replica (eventual)                                                                                                                             | Clustered Redis is eventually consistent                |
+| CockroachDB          | Strong Consistency               | Distributed SQL DB with global transactions                      | Banking, fintech, multi-region apps             | Not tunable                                                                                                                                                               | Strong across nodes and regions                        |
+| Google Spanner       | Strong Consistency               | Global SQL DB with external consistency via TrueTime             | Global inventory, finance                        | Can use stale reads (`bounded staleness`)                                                                                                                                 | Strong across continents                               |
+| Azure Cosmos DB      | Session Consistency              | Multi-model DB with 5 tunable models                             | Personalization, e-commerce                     | Choose among Strong, Bounded, Eventual, etc.                                                                                                                              | Most flexible consistency options available             |
+| Riak                 | Eventual Consistency             | KV store prioritizing availability                               | Sensor data, CRDT-based systems                 | Use quorum settings: N, R, W                                                                                                                                              | CRDTs needed for conflict resolution                    |
+| Google BigTable      | Strong (row), Eventual (multi-row) | Column DB with row-based strong consistency                     | Analytics, telemetry                            | Design schema to keep strong consistency within a row                                                                                                                     | Multi-row ops are eventually consistent                |
+
+
+### Switch by Topology or Client Routing:
+In systems like Redis, Kafka, or ElasticSearch, topology (leader/follower) and client read preference can be configured to control consistency.
+
+Examples:
+Kafka: Use acks=all for strong consistency, acks=0 for fast/weak writes
+
+MongoDB: Use readPreference=primary (strong) vs. secondaryPreferred (eventual)
+
+### Best Practices:
+
+| Need	                           | Recommended Tuning                                      |  
+|---------------------------------|---------------------------------------------------------|
+| Accurate reads after writes     | 	Strong (QUORUM/ALL) consistency for read/write         |
+| Low latency, ok to lag          | 	Eventual or single-node reads                          |
+| Per-user causality	             | Session or Causal Consistency                           |
+| Tradeoffs between cost/latency	 | Bounded staleness or Consistent Prefix                  |
+| Geo-distributed apps	           | Spanner or Cosmos DB with strong or session consistency |
+
+###  DynamoDB Consistency Options
+DynamoDB supports two types of reads:
+
+Eventually Consistent Reads (default): Faster, cheaper, might return stale data
+
+Strongly Consistent Reads: Always returns the most recent data, with slightly higher latency and cost
+
+For writes, all operations are strongly consistent by default.
+
+``` java
+Read Consistency in AWS SDK
+ 
+DynamoDbClient dynamoDb = DynamoDbClient.create();
+
+GetItemRequest request = GetItemRequest.builder()
+.tableName("Users")
+.key(Map.of("userId", AttributeValue.fromS("123")))
+.consistentRead(true) // 👈 Enables strong consistency
+.build();
+
+GetItemResponse response = dynamoDb.getItem(request);
+```
+
+``` AWS CLI Example
+ 
+aws dynamodb get-item \
+--table-name Users \
+--key '{"userId": {"S": "123"}}' \
+--consistent-read  #  Enables strong consistency
+
+```
+
+```️ Terraform Example: Creating a DynamoDB Table
+Terraform does not set consistency itself—read consistency is a runtime behavior, not a table-level setting. But here’s how to define a table:
+
+resource "aws_dynamodb_table" "users" {
+name           = "Users"
+billing_mode   = "PAY_PER_REQUEST"
+hash_key       = "userId"
+
+attribute {
+name = "userId"
+type = "S"
+}
+
+tags = {
+Environment = "dev"
+}
+}
+
+To tune consistency, use application-side code as shown above.
+```
+
+| Need	                           | Recommended Tuning                                      |  
+|---------------------------------|---------------------------------------------------------|
+| Accurate reads after writes     | 	Strong (QUORUM/ALL) consistency for read/write         |
+| Low latency, ok to lag          | 	Eventual or single-node reads                          |
+| Per-user causality	             | Session or Causal Consistency                           |
+| Tradeoffs between cost/latency	 | Bounded staleness or Consistent Prefix                  |
+| Geo-distributed apps	           | Spanner or Cosmos DB with strong or session consistency |
+
+### Tradeoff Summary
+
+| Scenario	                                                      | Recommended Read Mode         | 
+|----------------------------------------------------------------|-------------------------------|
+| User profile/settings	| Strongly consistent (true)    |
+| Feed browsing, search, analytics | Eventually consistent (false) |
+| Real-time  financial or inventory	                             | Strongly consistent           |
+| Low-latency, high-throughput reads                             | 	Eventually consistent        | 
