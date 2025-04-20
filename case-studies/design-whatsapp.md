@@ -383,10 +383,10 @@ Both parties concatenate the DH outputs (DH1 || DH2 || DH3 || DH4).
 They feed the concatenated result into a Key Derivation Function (KDF) (e.g., HKDF with SHA-256) to derive the shared session key (SK).
 The session key initializes the Double Ratchet Algorithm for message encryption.
 ```
-  - how do you double ratchet?
-    - Once you have a shared session key → you now evolve it securely every time a message is sent or received.
-    - The Double Ratchet = 2 types of key updates:
-    - For every message, generate a new message key (forward secrecy) if someone gets key_99, they can’t decrypt key_1 to key_98
+   - how do you double ratchet?
+     - Once you have a shared session key → you now evolve it securely every time a message is sent or received.
+     - The Double Ratchet = 2 types of key updates:
+     - 1. For every message, generate a new message key (forward secrecy) if someone gets key_99, they can’t decrypt key_1 to key_98
 
 ```bash
 
@@ -394,13 +394,11 @@ message_key_N = KDF(chain_key_N-1)
 chain_key_N = KDF(chain_key_N-1)
 
 ```
-    - Diffie-Hellman Ratchet (New Ephemeral Keys)
-    - Periodically (e.g., when roles switch or message gaps occur), both users generate new ephemeral DH keys
+    - 2. Diffie-Hellman Ratchet (New Ephemeral Keys)
+       - Periodically (e.g., when roles switch or message gaps occur), both users generate new ephemeral DH keys
+       - They exchange public parts and re-run a new DH exchange:
 
 ```bash
-
-They exchange public parts and re-run a new DH exchange:
-
 shared_secret_new = DH(my_new_private, their_new_public)
 New shared secret → new base for symmetric ratchet
 ```
