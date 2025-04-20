@@ -402,4 +402,25 @@ New shared secret → new base for symmetric ratchet
 ```
 
 # Wrap Up
-    
+- Handling 10 fold increase from 20 million ADU to 200 million ADU 
+
+
+| Component     | 20 million  DAU                         | 10X Scaling      - 200 million  DAU |              
+|---------------|-----------------------------------------|-------------------------------------|
+| Messages/day  | 400 million                             | 4B                                  | 
+| Data/day      | ~2 TB                                   | 20 TB                               |
+| Partitions    | 500–1000 (optimize per use case)        | 10k - 20K partitoins                |
+| Brokers       | 8–10 Kafka brokers                      | 80 - 100 brokers                    |
+| storage       | 42 GB (rep factor = 3)                  | 16TB ~ 20 TB                        |
+| retention     | 7 days                                  | 30 days                             |
+| cassandra     | 15 - 30 nodes                           | 150- 300 nodes                      
+| Consumers     | Depends on use case (max = #partitions) |                                     |
+|Peak throughput (replication 3x) | 	~690MB/sec                             | 6.9GB/sec                           |
+| Redis user persence service| 1 - 2 shards                            |    50 shards|
+| websocket servers | 50-100 | 500 - 1000 servers|
+
+- Scaling to 200M users means thinking multi-region, multi-tenant, and multi-layered:
+  - Async everywhere
+  - Encryption-first
+  - Observability & rate-limiting
+  - Failure isolation: regional failover, circuit breakers
