@@ -10,17 +10,23 @@ Approach to Designing Systems:
      - What features are we building? 
      - Suggest some features if it is a common system like Whatsapp, Twitter etc;
      - Web vs Mobile
+   - NFR's:
+     - Scalability
+     - Latency
+     - HA
+     - Fault Tolerance
    - Assumption
      - How many Users does the product have
+     - What data types are we going to handle: messages, files, video?
      - Scale Up/Growth characteristics:
        - Number of Users in 3 months, 6 months & 1 year
        - Daily Active Usage
-       - What data types are we going to handle: messages, files, video?
+       - Size of each message
    - Integration
      - Current Technology Stack
      - Existing Services or Technology We may leverage
 
-2) Design the High Level: 10 - 15 mins
+2) High Level Design: 10 - 15 mins
     - Visualize the System Diagram -or- Design outline of the system if white boarding
     - Identify the core components using boxes
     - Suggest multiple approaches if possible
