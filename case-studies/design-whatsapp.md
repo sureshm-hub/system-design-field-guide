@@ -257,18 +257,18 @@ SET typing:user123:chat456 "typing" EX 5
 |  Consumers   | Depends on use case (max = #partitions) |
 
 - Handle Hot Partitions Causes/Remedies:
-- sticky partition from producers (ex: partionId = 1)
-  - Use better partition keys
-  - for group chats use groupId+":"+userId 
-- one groupId or userId dominates messages 
-  - use salt groupId:1, groupId:2
-  - downside is you loose ordering
-- not enough parallelism to spread load
-  - add more partitions
-- split topics by use case
-  - chat-messages vs system-notifications vs audit-log
-- consumer side parallelism
-  - if partitions are maxed out then cg parallelism can help
+  - sticky partition from producers (ex: partionId = 1)
+    - Use better partition keys
+    - for group chats use groupId+":"+userId 
+  - one groupId or userId dominates messages 
+    - use salt groupId:1, groupId:2
+    - downside is you loose ordering
+  - not enough parallelism to spread load
+    - add more partitions
+  - split topics by use case
+    - chat-messages vs system-notifications vs audit-log
+  - consumer side parallelism
+    - if partitions are maxed out then cg parallelism can help
 
 - how many topics do we need?
 
@@ -384,9 +384,9 @@ They feed the concatenated result into a Key Derivation Function (KDF) (e.g., HK
 The session key initializes the Double Ratchet Algorithm for message encryption.
 ```
   - how do you double ratchet?
-  - Once you have a shared session key → you now evolve it securely every time a message is sent or received.
-  - The Double Ratchet = 2 types of key updates:
-  - For every message, generate a new message key (forward secrecy) if someone gets key_99, they can’t decrypt key_1 to key_98
+    - Once you have a shared session key → you now evolve it securely every time a message is sent or received.
+    - The Double Ratchet = 2 types of key updates:
+    - For every message, generate a new message key (forward secrecy) if someone gets key_99, they can’t decrypt key_1 to key_98
 
 ```bash
 
@@ -394,8 +394,8 @@ message_key_N = KDF(chain_key_N-1)
 chain_key_N = KDF(chain_key_N-1)
 
 ```
-  - Diffie-Hellman Ratchet (New Ephemeral Keys)
-  - Periodically (e.g., when roles switch or message gaps occur), both users generate new ephemeral DH keys
+    - Diffie-Hellman Ratchet (New Ephemeral Keys)
+    - Periodically (e.g., when roles switch or message gaps occur), both users generate new ephemeral DH keys
 
 ```bash
 
