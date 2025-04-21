@@ -31,8 +31,17 @@
   - autheN
   - routing logic
 - search service
-  - search
+  - key word search
+  - filtered response (category: clothing | shoes | accessories )
+  - faceted response (dynamic: price range, star rating)
+  - synonyms, typos handling 
 - recommendation engine
+  - behavioral, context-aware, personal ranking
+  - collaborative filtering, content based filtering, or hybrid models
+  - backed by:
+    - embedded store (faiss)
+    - precomputed recommendation scores
+    - real time event signals
 - review service
   - post comments
   - up vote/ down vote
@@ -46,19 +55,127 @@ flowchart TD
 
     subgraph review
     user2 --> review-service --> storage-service & recommendation-engine
+    recommendation-engine --> user-embeddinds --> inference --> fiass/top-n --> rerank/softmax
     end
     
     subgraph user-search
     user  --> loadbalancer --> gateway <--> search-service <--> recommendation-engine & product-search
     end
-
 ```
 
 # Design Deep Dive
   - http/rest vs graphQL
-    - graphQL for mobile to give flexibility to client app
+    - graphQL for mobile to "adaptive response shaping" 
+      - device
+      - battery
+      - network
     - http/rest for web
-  - response model
+  - recommendation engine  **Real Time vs Batch**
+
+| Type | tech stack | purpose |
+|------|------------|-------|
+|batch |spark on EMR,sage maker,airflow|model training using historical data|
+| real time|kafka, flink/spark streaming (micro batching), Redis, DynamoDb, faiss | stream user behavior and low latency scoring| 
+
+  - ## data pipeline
+  - **Core Data Events**
+  - ViewProduct, AddToCart, Purchase, Upvote, SearhQuery, Session Events
+  - events sent from mobile sdk & web
+```mermaid
+flowchart LR
+    A[data events] -->|kafka| B[flink - sessionization] --> C[kafka topic - behavioral features] --> D1[redis-feature store] & D2[S3 - parquet]
+    D2 --> E["spark (daily batch job)"] --> F["train models (sagemaker/TFX)"] --> G["generate embeddings"] --> Cassandra,DynamoDb & Redis 
+```
+  - **flink**: sessionization joins user session info & enrich product pairs
+
+```json
+// event from kafka
+{
+  "event_type": "view_product",
+  "product_id": "prod123",
+  "user_id": "user123",
+  "event_timestamp": "2025-01-02T12:02:00Z",
+  "session": "session_123",
+  "device": "mobile"
+}
+
+// fink enriches with product catalog and user profile - demographics & preferences
+{
+  "user_id": "user123",
+  "sessionFeatures": {
+    "device": "mobile",
+    "current_session_duration": 20,
+    "current_session_clicks": 3
+  },
+  "user_demo": {
+    "region": "us",
+    "age": 30,
+    "segments": [
+      "tech",
+      "deals"
+    ]
+  },
+  "product_metadata": {
+    "product_id": "prod123",
+    "product_name": "apple laptop",
+    "product category": ["electronics","laptop", "gaming"]
+    "price": "1299.99"
+  }
+}
+```
+  - **redis**: stores user features for online scoring
+  - user feature vectors: precomputed embeddings 
+  - session preferences: recent views, preferred categories
+  - click-affinity weights: recency score, click-through rate
+
+```json
+{
+  "embeddings": [0.12,0.45,...,-0.4, 0.99],
+  "recently_viewed": ["prod_123", "prod_456", "prod_789"],
+  "preffered_categories": ["gaming", "laptop"],
+  "recency_score" : 0.77,
+  "click_through_rate": 0.32
+}
+``` 
+```java
+// fetch user features from redis
+String key = "user:"+userId+":features";
+String json = redis.get(key);
+return parse(json, UserFeature.class);
+        
+// compare with top N product vectors in faiss
+API: POST /recommendations/faiss/top-n 
+
+// apply rerank softmax or top-k 
+API: POST /recommendations/rerank
+
+// set TTL = 1 for session level features
+EXPIRE "user:"+userId+":session" 3600 
+
+// finally, persist vectors into Dynamo DB or Cassandra
+```
+```mermaid
+flowchart TD
+User --> SearchService -->|search| ElasticSearch
+SearchService -->|context| RecommendationService
+
+    subgraph RecommendationService
+        direction LR
+        FeatureStore --> InferenceService
+        InferenceService --> FaissIndex
+        FaissIndex --> CandidateProducts
+        CandidateProducts --> Reranker
+        Reranker --> TopProducts
+    end
+
+    SearchService --> TopProducts --> Frontend
+
+    User --> ReviewService --> FeedbackEvents --> Kafka
+    Kafka --> StreamProcessor --> FeatureStore
+    Kafka --> TrainingPipeline --> ModelStore
+```
+
+  - ## search response model
       ```json
       {
         "search": "keyword",
