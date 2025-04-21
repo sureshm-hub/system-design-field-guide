@@ -80,12 +80,12 @@ pub-sub --> database --> KV-store[cassandra/dynamo-db] & mongo-db & search-index
 # Deep Dive
 
   - Real time communication
-  - wss for real time text messaging, user status and notifications
-      - use backoff strategies when communication fails
-      - queue unsent messages
-  - mqtt if it is an IOT app with low bandwidth or battery (maybe older device with limited bandwidth)
-  - http long polling if wss fails
-  - grpc for internal microservice communication
+    - wss for real time text messaging, user status and notifications
+        - use backoff strategies when communication fails
+        - queue unsent messages
+    - mqtt if it is an IOT app with low bandwidth or battery (maybe older device with limited bandwidth)
+    - http long polling if wss fails
+    - grpc for internal microservice communication
   - Data Model
       - User {user_id, name,     phone, status, profile_pic}
       - Group {group_id, name, members[], admins[]}
