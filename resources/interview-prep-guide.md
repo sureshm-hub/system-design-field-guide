@@ -15,6 +15,7 @@ Approach to Designing Systems:
      - Latency
      - HA
      - Fault Tolerance
+     - Observability/Usage Analytics
    - Assumption
      - How many Users does the product have
      - What data types are we going to handle: messages, files, video?
