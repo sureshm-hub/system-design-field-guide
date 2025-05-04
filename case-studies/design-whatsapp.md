@@ -244,7 +244,6 @@ SET typing:user123:chat456 "typing" EX 5
   - 5M users * 100 bytes/key ~ 500 MB Redis RAM
   - 1-2 shards can easily handle this
 
-
 - Summary for 20M DAU, 5KB messages, 20 messages/user/day
 
 | Component    | Estimate                                |
@@ -303,7 +302,7 @@ SET typing:user123:chat456 "typing" EX 5
 | gRPC Streaming     | Native apps (Android, iOS, backend services)  |
 | Push Notification  | Offline/battery saver use case                |
 
-# End-to-End Encryption
+## End-to-End Encryption
 
 1. Key Generation and Management
    - each user install of app generates the private_key and public_key establishing users identity.
