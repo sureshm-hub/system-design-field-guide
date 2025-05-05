@@ -40,26 +40,19 @@
   - Dynamo DB in preference to Relational like Oracle
     - prefer availability in case of partitions & support eventually consistency 
 
-```mermaid
-flowchart LR
-    
-    browser -->|tiny_url| fetch_tiny_url_service <--> cache_service
-    
-    user --> |full_url| create_tiny_url_service --> DynamoDB & cache_service
-
-```
 ``` mermaid
- 
-flowchart LR
 
-  browser -->|GET /short_url| CloudFront -->|Cache Miss| API_Gateway --> Web_Server
-  Web_Server -->|Check Cache| ElastiCache
-  Web_Server -->|Cache Miss| DynamoDB
-  Web_Server -->|Log Click| Kinesis --> S3
+flowchart LR 
 
-  user -->|POST /tinyUrl| API_Gateway -->|Authenticate| Cognito --> Web_Server
-  Web_Server -->|Write| DynamoDB
-  Web_Server -->|Update Cache| ElastiCache
+  browser --> |GET /short_url | CloudFront --> | cache miss | API_Gateway --> Web_Server --> |Check Cache| ElasticCache
+  Web_Server --> |cache miss| Dynamo_DB
+  Web_Server --> | update cache| ElasticCache
+  Web_Server --> | Log Click| Kinesis --> S3
+  
+  user --> |POST /full_url | API_Gateway
+  API_Gateway --> | Authenticate| Cognito
+  Cognito --> Web_Server
+  Web_Server --> |Write Item|Dynamo_DB
 
 ```
 
