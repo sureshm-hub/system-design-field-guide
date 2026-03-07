@@ -70,6 +70,7 @@
 - Event Sourcing (ES):
   ES is a persistence pattern that stores all changes to an application's state as an immutable, time-ordered sequence 
   of events, which acts as the single "source of truth". The current state is then derived by replaying these events.
+- Instead of storing the current state, it stores the series of events that led to it. State is reconstructed on demand.
 
 # **Backpressure:**
 - Back pressure occurs when the incoming flow of events exceeds the system’s processing capacity
