@@ -115,8 +115,8 @@ or timeout happens.
 
 
 ## 3. SSE (Server-Sent Events)
-* Server keeps a single HTTP connection open and continuously pushes events to the client.
-This is one-way: server → client.
+* Server keeps a single HTTP connection open and continuously pushes events to
+the client. This is one-way: server → client.
 
 ### Flow
   - Client opens EventSource
@@ -172,58 +172,9 @@ This is one-way: server → client.
   - Monitoring dashboards
   - Stock ticker style updates
   - Easier than WebSockets for one-way streaming
+  - CricInfo/NBA Score updates on server
 
-## 4. Webhooks
-* Instead of client repeatedly asking, the server calls another server when an 
-event happens.
-
-### Flow
-  - Consumer registers callback URL
-  - Producer stores it
-  - On event, producer sends HTTP POST to callback URL
-
-```JavaScript sender example
-    async function sendWebhook() {
-        const payload = {
-        event: "order.created",
-        orderId: 123
-        };
-        
-        const res = await fetch("https://client.example.com/webhook", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            "X-Signature": "abc123"
-            },
-            body: JSON.stringify(payload)
-        });
-    
-        console.log("Webhook status:", res.status);
-    }
-```
-```Java Spring Boot receiver
-        @RestController
-        public class WebhookController {
-        
-            @PostMapping("/webhook")
-            public ResponseEntity<String> receiveWebhook(@RequestBody Map<String, Object> payload,
-                                                         @RequestHeader(value = "X-Signature", required = false) String signature) {
-                if (signature == null || !signature.equals("abc123")) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature"); // 401
-                }
-        
-                System.out.println("Received webhook: " + payload);
-                return ResponseEntity.ok("Received"); // 200
-            }
-        }
-```
-### When to use
-  - Payment notifications
-  - GitHub/Jenkins triggers
-  - Stripe/Slack/Shopify style integrations
-  - Efficient for server-to-server async events
-
-## 5. WebSockets
+## 4. WebSockets
 
 * WebSockets provide a full-duplex persistent connection between client and server.
 Unlike SSE, both client and server can send messages anytime after the connection is established.
@@ -338,3 +289,88 @@ Unlike SSE, both client and server can send messages anytime after the connectio
   - 1006 → abnormal closure
   - 1008 → policy violation
   - 1011 → internal server error
+
+### Other HTTP upgrade examples like WebSocket (related upgrade/tunneling patterns):
+  - HTTP → WebSocket via 101 Switching Protocols
+  - HTTP CONNECT for creating a tunnel, often for HTTPS via proxy
+  - HTTP/2 cleartext upgrade (h2c) exists, but uncommon on the public web
+  - TLS ALPN negotiation chooses protocol like HTTP/1.1 vs HTTP/2, but 
+  that is not the same as HTTP Upgrade
+
+### TCP 3 way handshake
+  - The TCP 3-way handshake (SYN, SYN-ACK, ACK) establishes a reliable 
+    connection before HTTP data is transmitted
+  - SYNC
+  - SYNC/ACK
+  - ACK
+
+## 5. Webhooks: Server to Server calling
+* Instead of client repeatedly asking, the server calls another server when an
+  event happens.
+* Cross‑system automation without polling or messaging
+
+### Flow
+- Consumer registers callback URL
+- Producer stores it
+- On event, producer sends HTTP POST to callback URL
+
+```JavaScript sender example
+    async function sendWebhook() {
+        const payload = {
+        event: "order.created",
+        orderId: 123
+        };
+        
+        const res = await fetch("https://client.example.com/webhook", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-Signature": "abc123"
+            },
+            body: JSON.stringify(payload)
+        });
+    
+        console.log("Webhook status:", res.status);
+    }
+```
+```Java Spring Boot receiver
+        @RestController
+        public class WebhookController {
+        
+            @PostMapping("/webhook")
+            public ResponseEntity<String> receiveWebhook(@RequestBody Map<String, Object> payload,
+                                                         @RequestHeader(value = "X-Signature", required = false) String signature) {
+                if (signature == null || !signature.equals("abc123")) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature"); // 401
+                }
+        
+                System.out.println("Received webhook: " + payload);
+                return ResponseEntity.ok("Received"); // 200
+            }
+        }
+```
+### When to use
+- Payment notifications
+- GitHub/Jenkins triggers
+- Stripe/Slack/Shopify style integrations
+- Efficient for server-to-server async events
+
+### How it works
+- Webhook post → how browser knows: the browser usually does not know
+  directly about the webhook call. The webhook hits your backend, then your
+  backend updates the UI via:
+    - SSE to push fresh data to browser
+    - WebSocket to push instantly
+    - polling / refetch from browser
+    - sometimes DB/cache update + browser refresh/API call
+- GitHub/Jenkins triggers:
+    - GitHub sends webhook on:
+        - push
+        - pull_request
+        - release
+    - Jenkins receives it and can:
+        - start CI build
+        - run tests
+        - deploy
+        - post build result
+- Third‑party -> your system callbacks
