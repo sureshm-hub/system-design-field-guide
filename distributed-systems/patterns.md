@@ -88,9 +88,10 @@
     - Kafka + HPA/Kubernetes for Scalable EDA
 
 distributed system:
-https://medium.com/@ali.gelenler/architectural-microservices-patterns-saga-outbox-and-cqrs-with-kafka-25469d75c18c
-https://microservices.io/patterns/data/cqrs.html
+  - https://medium.com/@ali.gelenler/architectural-microservices-patterns-saga-outbox-and-cqrs-with-kafka-25469d75c18c
+  - https://microservices.io/patterns/data/cqrs.html
 
 Adv. Error handling/Backpressure in Saga: 
-https://medium.com/ssense-tech/exploring-advanced-error-handling-patterns-with-event-driven-architecture-part-i-e2f37741d904
-https://medium.com/@mokarchi/managing-back-pressure-in-event-driven-architectures-fe370aa82df1
+  - https://medium.com/ssense-tech/exploring-advanced-error-handling-patterns-with-event-driven-architecture-part-i
+-e2f37741d904
+  - https://medium.com/@mokarchi/managing-back-pressure-in-event-driven-architectures-fe370aa82df1
