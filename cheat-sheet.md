@@ -3,7 +3,8 @@ Approach to Designing Systems:
    - Do frequent check in's throughout the process
    - Leverage Collaboration with the Interviewer
    - If you get stuck, don't hesitate to ask for hints
-   - Wait for the interviewer to acknowledge, prompts or guides you to the next point or phase
+   - Wait for the interviewer to acknowledge, prompts or guides you to the next
+     point or phase
    
 1)  Establish Design Scope: 5 - 10 mins
    - Functional Requirements:
@@ -28,7 +29,8 @@ Approach to Designing Systems:
      - Existing Services or Technology We may leverage
 
 2) High Level Design: 10 - 15 mins
-    - Visualize the System Diagram -or- Design outline of the system if white boarding
+    - Visualize the System Diagram -or- Design outline of the system if white 
+      boarding
     - Identify the core components using boxes
     - Suggest multiple approaches if possible
     - Identify connections between components

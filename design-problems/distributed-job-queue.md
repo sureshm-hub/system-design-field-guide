@@ -1,7 +1,8 @@
 # Distributed Job Queue System
 
 ## Overview
-A scalable job queue system that allows processing millions of tasks asynchronously.
+A scalable job queue system that allows processing millions of tasks 
+asynchronously.
 
 ## Architecture Components
 - **Message Broker (Kafka/RabbitMQ)**

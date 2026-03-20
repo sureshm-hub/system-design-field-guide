@@ -46,8 +46,6 @@
   * Low-frequency updates
   * Easy to implement, but wasteful
 
-
-
 ## 2. Long Polling
 - Client sends a request, and the server holds it open until  data is available
 or timeout happens.
