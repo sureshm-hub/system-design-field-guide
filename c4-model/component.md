@@ -13,3 +13,4 @@ graph TD;
     end
     F[Monitoring & Logging] -->|Observability| C
     G[Consumers Microservices, Analytics] -->|Consume Events| E
+```

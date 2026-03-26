@@ -18,3 +18,4 @@ F[Replica Orchestration Service]
 F --> G[Replica State Store]
 end
 end
+```

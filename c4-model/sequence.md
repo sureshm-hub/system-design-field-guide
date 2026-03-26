@@ -17,3 +17,4 @@ sequenceDiagram
     Orchestrator->>Worker: Dispatches Processing Task
     Worker->>Consumer: Sends Processed Event
     Worker->>Orchestrator: Acknowledgment & State Update
+```

@@ -25,3 +25,4 @@ end
         P[EventProcessor Class] -->|Dependencies Factor 2| Q[Maven/NPM Packages]
         P -->|Codebase Factor 1| R[Git Repository]
     end
+```

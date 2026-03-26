@@ -10,3 +10,4 @@ graph TD
     C -->|Database Failure?| E[State Store Retry]
     E -->|Success| F[Update Event Status]
     E -->|Multiple Failures| G[Alert & Fallback]
+```

@@ -30,3 +30,6 @@ Considers Kubernetes (GKP/GAP), containerized microservices, and serverless func
 ## 6. Failure Mode and Recovery Plan
 
 A fault tolerance diagram showing failure scenarios and recovery strategies (e.g., circuit breakers, retries, dead-letter queues).
+
+
+https://c4model.com/abstractions
