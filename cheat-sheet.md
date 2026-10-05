@@ -29,6 +29,7 @@ Approach to Designing Systems:
      - Existing Services or Technology We may leverage
 
 2) High Level Design: 10 - 15 mins
+   _HLD starts from externally visible behavior, not internal classes._
     - Visualize the System Diagram -or- Design outline of the system if white 
       boarding
     - Identify the core components using boxes
@@ -41,8 +42,10 @@ Approach to Designing Systems:
 3) Design Deep dive: 15 -25 mins
    - By this time you have established scope & agreed on high level design
    - Dig into Details:
-     - Table
      - API's
+     - Table
+     - Classes (only when asked - Low Level Details)
+     - Now discuss flows
      - System Design problem specific deep dives:
        - Algorithms 
        - Hash Functions (ex: tinyUrl)
